@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Config-Strain Radar — Payer Pipeline Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--blue:#105299;--gold:#D6B73E;--ink:#221F20;--tint:#EAF4FB;--goldbg:#FFF4CF;--grey:#EAEAEB}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f7f9fc}
+.banner{background:linear-gradient(120deg,#0c3e74,var(--blue));color:#fff;padding:34px 42px}
+.banner .kicker{font-size:11px;letter-spacing:2px;color:#BBECFF;font-weight:bold;margin-bottom:10px}
+.banner h1{font-family:Georgia,'Times New Roman',serif;font-size:34px;margin-bottom:6px}
+.banner p{font-size:15px;opacity:.92;max-width:900px}
+.meta{font-size:12px;margin-top:10px;color:#BBECFF}
+.banner a{color:#BBECFF}
+.wrap{max-width:1200px;margin:0 auto;padding:26px 24px 60px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:-40px auto 26px;max-width:1200px;padding:0 24px;position:relative}
+.card{background:#fff;border-top:4px solid var(--blue);border-radius:8px;box-shadow:0 4px 14px rgba(16,82,153,.12);padding:16px;text-align:center}
+.card .n{font-family:Georgia,serif;font-size:38px;font-weight:bold;color:var(--blue)}
+.card.gold{border-top-color:var(--gold)} .card.gold .n{color:#a8891a}
+.card .l{font-size:11px;letter-spacing:1px;font-weight:bold;color:#555;margin-top:4px}
+h2{font-family:Georgia,serif;color:var(--blue);font-size:22px;margin:30px 0 6px;padding-bottom:6px;border-bottom:2px solid var(--gold)}
+.sub{font-size:13px;color:#555;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.panel{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:18px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+select,input[type=text]{padding:8px 10px;border:1px solid #c9d6e4;border-radius:6px;font-size:13px;background:#fff}
+input[type=text]{flex:1;min-width:200px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+th{background:var(--blue);color:#fff;text-align:left;padding:8px 10px;font-size:12px;position:sticky;top:0}
+td{padding:8px 10px;border-bottom:1px solid #e4ebf2;vertical-align:top}
+tr:nth-child(even) td{background:var(--tint)}
+.tier{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:bold}
+.tier.Gold{background:var(--goldbg);color:#8a6d1a}.tier.Silver{background:#e2e8f0;color:#334}
+.tier.Bronze{background:#efe0d0;color:#7c4a12}.tier.review{background:#BBECFF;color:#0c3e74}
+.note{background:var(--goldbg);border-left:5px solid var(--gold);padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;margin:16px 0}
+details{margin-top:18px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px 18px;font-size:13px}
+summary{font-weight:bold;color:var(--blue);cursor:pointer;font-size:14px}
+details li{margin:6px 0 6px 18px}
+.count{font-size:12px;color:#555;margin:6px 0 10px}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid #e4ebf2;border-radius:6px}
+.footer{font-size:11px;color:#777;margin-top:30px;text-align:center}
+</style></head><body>
+<div class="banner">
+ <div class="kicker">SIMPLIFY HEALTHCARE — SWAN AGENT DASHBOARD · <a href="index.html">← ALL DASHBOARDS</a></div>
+ <h1>Config-Strain Radar · Payer Pipeline</h1>
+ <p>An autonomous Swan agent that scans the US payer market every morning for plans hiring in benefits configuration, provider data, product/plan operations or claims configuration — the signal that manual setup work is scaling, which is what Benefits1, Product1 and Provider1 automate. Every account below was found, verified, scored and drafted by the agent; nothing sends without human approval.</p>
+ <div class="meta">Prepared for Murtuza · by Shamit Biswas · data as recorded by the agent, July 1–6, 2026 · contact emails redacted in this public view (available in Swan)</div>
+</div>
+<div class="cards">
+ <div class="card"><div class="n">27</div><div class="l">QUALIFIED PAYER ACCOUNTS</div></div>
+ <div class="card gold"><div class="n">12</div><div class="l">GOLD TIER</div></div>
+ <div class="card"><div class="n">124</div><div class="l">CREDITS USED (&lt;5 / ACCOUNT)</div></div>
+ <div class="card"><div class="n">0</div><div class="l">SENT — ALL AWAIT APPROVAL</div></div>
+</div>
+<div class="wrap">
+ <div class="grid2">
+  <div class="panel"><h2 style="margin-top:0">Accounts by tier</h2><div class="sub">Gold = strong signal + large deal · Silver = one of the two · ambiguity scores upward</div><canvas id="tierChart" height="240"></canvas></div>
+  <div class="panel"><h2 style="margin-top:0">Accounts by signal type</h2><div class="sub">What triggered each account's inclusion</div><canvas id="sigChart" height="240"></canvas></div>
+ </div>
+ <div class="note"><b>How to read this:</b> each row is a payer the agent qualified from a fresh (&le;7-day-old) hiring signal, with an identified operations owner and a staged outreach draft. Six accounts carry two simultaneous signals. Outreach activates only after human approval and an email sender connection.</div>
+ <h2>The 27 accounts</h2>
+ <div class="controls">
+  <select id="fTier"><option value="">All tiers</option><option>Gold</option><option>Silver</option><option>In review</option><option>Bronze</option></select>
+  <select id="fSig"><option value="">All signal types</option><option>Config hiring</option><option>Provider-data hiring</option><option>Dual signal</option><option>Platform migration</option><option>No signal</option></select>
+  <input type="text" id="fText" placeholder="Search account, role, contact…">
+ </div>
+ <div class="count" id="count"></div>
+ <div class="tbl-scroll"><table id="tbl"><thead><tr><th>Account</th><th>Tier</th><th>Hiring signal</th><th>Posted</th><th>Agent's evidence</th><th>Contact identified</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+ <details><summary>Methodology — what the agent does on every run</summary>
+  <ul>
+   <li><b>Detect:</b> scan for job postings from the last 7 days matching benefits configuration, provider data, product/plan ops, claims configuration at US payers. Max 5 companies per run, daily at 8:20 AM.</li>
+   <li><b>Verify &amp; research:</b> confirm genuine payer; cheapest data first (own records → free sources → paid enrichment only if a gap remains); every claim source-cited with confidence flags.</li>
+   <li><b>Score:</b> signal strength × deal size → Gold / Silver / Bronze; job postings gain weight when corroborated (named platform, multiple roles, migration); weak accounts stop before any paid enrichment; scores decay without fresh signals.</li>
+   <li><b>Find the owner:</b> VP/Director of Configuration, Provider Data, Product Ops or IT/Ops; verified email where possible, LinkedIn otherwise.</li>
+   <li><b>Draft:</b> hook-anchored sequences (3–5 steps, new angle per follow-up, soft close); "no hook, no send"; auto-send disabled.</li>
+   <li><b>Stage for review:</b> approve / edit / adjust / wait — nothing sends without a human.</li>
+  </ul>
+ </details>
+ <div class="footer">Generated from Swan Config-Strain Radar output · 35 runs, Jul 1–6 2026 · 124 credits (~38% of workspace usage) · duplicates and tier reviews flagged, not hidden</div>
+</div>
+<script>
+const ACC = {"accounts": [["WelbeHealth", "Gold", "Claims Configuration Specialist", "Jul 5, 2026", "PACE payer, 13+ CA centers expanding NY/NJ/OR; role covers fee schedules, claim/billing and auth rules \u2014 repeated per new center", "Matt Wolf, SVP Health Plan Operations (email in Swan)", "4-email sequence staged", "Config hiring"], ["Jefferson Health Plans", "Gold", "Config-strain roles + June 2026 rebrand & 12K MA growth", "Jun 2026", "PA/NJ payer, 370K+ members, 4 LOBs; rebrand + rapid MA growth = heavy benefit configuration load", "Hope Hatch, AVP System Configuration (LinkedIn)", "Draft staged", "Config hiring"], ["Peak Health", "Gold", "Benefits Configuration Analyst", "Jul 1, 2026", "New provider-led MA plan (WVU Medicine), 12.5K members WV/PA; building config from scratch", "Stacy Schiffour, Mgr Benefit Configuration (LinkedIn)", "Draft staged", "Config hiring"], ["Priority Health", "Gold", "Facets\u2192Epic migration; active Facets config staff", "Jun 2026", "1.4M members, $5.9B; core-system migration is the largest config event a payer undertakes", "SVP-level system configuration lead (LinkedIn)", "Draft in task", "Platform migration"], ["SmithRx", "Gold", "Benefits Configuration Analyst", "Jul 2026", "PBM, ~$78M rev, 1M lives; plan-setup hiring at a fast-growing PBM", "Brian May, Sr Director Plan Operations (LinkedIn)", "LinkedIn outreach drafted", "Config hiring"], ["Sentara Healthcare", "Gold", "Sr Configuration Analyst \u2014 NetworX Pricer", "Jul 2026", "~1M members, 3 product lines; posting names the exact pricing-config tooling", "Robert Krebbs, VP Network Management (email in Swan)", "3-step sequence staged", "Config hiring"], ["Healthfirst", "Gold", "Director, Configuration & Benefit Administration", "Jul 3, 2026", "Role description points to configuration-defect pain in claims/benefits administration", "Jennifer Yaggy, VP Claims Modernization (email in Swan)", "3-step sequence staged", "Config hiring"], ["CalOptima", "Gold", "Dual: benefits configuration + provider data management", "Jul 2026", "Orange County Medi-Cal COHS; two simultaneous postings across the functions Benefits1/Provider1 automate", "Quynh Nguyen, Director Provider Data Ops", "Dual-signal draft staged", "Dual signal"], ["Centivo", "Gold", "Benefits Plan Config Specialists, Levels I\u2013III", "Jun 25, 2026", "Self-funded plan administrator, 14 states; hiring one role at three levels = scaling config team", "Dawn Jacobs, Director Health Plan Operations", "Copy ready", "Config hiring"], ["Premera Blue Cross", "Gold", "Multiple config roles; large multi-level config team", "Jun 2026", "2.8M-member BCBS payer (WA/AK); Configuration Analysts at L3, L5 and Senior \u2014 manual config at scale", "Rajat Puri, EVP/COO (email in Swan)", "4-step draft ready", "Config hiring"], ["BCBS Louisiana", "Gold", "VP Medicare Ops + Sr Product Owner (claims/network)", "Jun 25, 2026", "1.9M members; $177M loss in 2025 adds cost pressure \u2014 automation-vs-headcount angle", "Carole Paetz, VP Ops & Business Engineering", "Draft staged", "Config hiring"], ["MVP Health Care", "Gold", "Two config-strain roles", "Jun 27, 2026", "Regional not-for-profit payer, 700K+ members NY/VT", "Matthew Loboen, VP Network Operations", "Draft staged", "Config hiring"], ["Blue Shield of California", "Silver", "Platform Administrator (EDI 270/271) + config staff roles", "Jul 3, 2026", "6M members, $22.9B; Facets + HealthRules dual stack; IT-adjacent role \u2192 medium intent, large deal", "Nate Oubre, SVP Health Plan Operations (email in Swan)", "Draft staged", "Config hiring"], ["Allied Benefit Systems", "Silver", "Medical Plan Configuration Analyst", "Jul 3, 2026", "Largest US independent TPA (payer-adjacent), 14,500+ employer groups", "Jocelyn Purtell, COO", "Draft staged", "Config hiring"], ["Gravie", "Silver", "Configuration Analyst", "Jul 2026", "Licensed carrier, $250M\u2013500M revenue", "Eric Emrey, SVP Health Plan Operations (email in Swan)", "Sequence drafted", "Config hiring"], ["MetroPlus Health Plan", "Silver", "Benefit Configuration Analyst", "Jul 3, 2026", "712K members, 8+ plan types on legacy PowerSTEPP; config stress stacking", "James Mele, VP Core Systems Ops (email in Swan, inferred)", "Draft staged", "Config hiring"], ["Oscar Health", "Silver", "Specialist, Provider Data Operations", "Jul 2026", "Posting + Jan 2026 contract-entity transfer = manual provider-data strain", "Monique Stoner, VP Provider Network Mgmt (email in Swan)", "3-step sequence drafted", "Provider-data hiring"], ["PacificSource Health Plans", "Silver", "Manager, Provider Credentialing & Ops", "Jun 2026", "500K members, 110K+ contracted providers; restructuring \u2014 do more with less", "Sara Ohrtman, Director Provider Network", "3-step sequence ready", "Provider-data hiring"], ["Sentara Health Plans", "Silver", "Sr Configuration Analyst", "Jun 2026", "VA/NC payer (fka Virginia Premier) on Facets/NetworX; exiting MA markets with staff cuts", "Taskeen Fatima, Manager Clinical Apps", "Draft staged", "Config hiring"], ["Moda Health", "Silver", "Facets Group Configuration Analyst I", "Jun 2026", "OR/AK payer, ~$1.3B; TriZetto Facets confirmed \u2014 the posting names it", "Jeanette Williams, Director of System Configuration", "Draft staged", "Config hiring"], ["Viva Health", "Silver", "Provider Network Dev + Credentialing Coordinators", "Jun 6, 2026", "Alabama HMO (UAB-affiliated), 100K+ members, ~15K providers; dual provider-data posting", "Robert H., Exec Director Network Strategy", "Draft ready", "Provider-data hiring"], ["Molina Healthcare", "In review", "Dual: Sr Analyst Provider Data Mgmt + Mgr Config & Claims Adjudication", "Jun 2026", "Fortune 500 MCO, $43B, 19 states, QNXT; two simultaneous postings", "Tom Newton", "4-step sequence drafted; tier in review", "Dual signal"], ["Florida Blue", "In review", "Benefits Plan Configuration Specialist", "Jun 2026", "BCBS FL: 4.38M members, $8.2B, Facets; agent rates ICP fit strong", "Arun Gupta, Director Medicare Product Ops", "Draft staged; tier in review", "Config hiring"], ["Provider Partners Health Plan", "In review", "Provider Network Specialist + Contracting Specialist", "Jun 17 & 23, 2026", "MA I-SNP across 8 states; dual provider-data postings; Provider1 fit", "Felix Gonzalez, VP Network Dev & Contracting (email in Swan)", "Draft staged", "Provider-data hiring"], ["Viva Health (second record)", "In review", "Provider Data Coordinator", "Jun 2026", "Same Alabama HMO under a second domain \u2014 duplicate record, needs merge", "Cardwell Feagin, COO (email in Swan)", "Draft staged; duplicate", "Provider-data hiring"], ["Peak Health (second record)", "In review", "Benefits Configuration Analyst", "Jul 2026", "Same WVU Medicine plan under a second domain \u2014 duplicate record, needs merge", "Amos Ross, President", "Duplicate; marked Non-ICP", "Config hiring"], ["Group Health Coop of Eau Claire", "Bronze", "No config-strain signal found", "\u2014", "61K-member WI co-op; acquired by Priority Health (Jan 2026), admin outsourced; agent stopped before enrichment", "None \u2014 correctly deprioritized", "Log only, no outreach", "No signal"]]}.accounts;
+const tbody=document.querySelector('#tbl tbody');
+function tierTag(t){const cls=t==='In review'?'review':t;return `<span class="tier ${cls}">${t}</span>`}
+function render(){
+ const ft=document.getElementById('fTier').value,fs=document.getElementById('fSig').value,fx=document.getElementById('fText').value.toLowerCase();
+ tbody.innerHTML='';let n=0;
+ ACC.forEach(a=>{
+  if(ft&&a[1]!==ft)return; if(fs&&a[7]!==fs)return;
+  if(fx&&!(a[0]+' '+a[2]+' '+a[4]+' '+a[5]).toLowerCase().includes(fx))return;
+  n++;
+  tbody.insertAdjacentHTML('beforeend',`<tr><td><b style="color:#105299">${a[0]}</b></td><td>${tierTag(a[1])}</td><td>${a[2]}</td><td style="white-space:nowrap">${a[3]}</td><td>${a[4]}</td><td>${a[5]}</td><td>${a[6]}</td></tr>`);
+ });
+ document.getElementById('count').textContent=`${n} of ${ACC.length} accounts shown`;
+}
+['fTier','fSig'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+document.getElementById('fText').addEventListener('input',render);
+render();
+const tiers={};ACC.forEach(a=>tiers[a[1]]=(tiers[a[1]]||0)+1);
+new Chart(document.getElementById('tierChart'),{type:'doughnut',data:{labels:Object.keys(tiers),datasets:[{data:Object.values(tiers),backgroundColor:['#D6B73E','#8fa6bc','#BBECFF','#b0703a']}]},options:{plugins:{legend:{position:'bottom'}}}});
+const sigs={};ACC.forEach(a=>sigs[a[7]]=(sigs[a[7]]||0)+1);
+new Chart(document.getElementById('sigChart'),{type:'bar',data:{labels:Object.keys(sigs),datasets:[{label:'Accounts',data:Object.values(sigs),backgroundColor:'#105299'}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:2}}}}});
+</script></body></html>
