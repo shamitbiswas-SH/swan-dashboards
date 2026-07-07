@@ -223,7 +223,7 @@ function openDrawer(comp){
  else{h+='<div class="dsec">VERIFIED APPEARANCES</div><div class="devent"><div class="r">Nothing verifiable for 2025–2027 — a finding in itself. Check quarantine below before assuming absence.</div></div>';}
  if(q.length){h+='<div class="dsec">QUARANTINED — THE AGENT SAID NO</div>';
   q.forEach(u=>{h+='<div class="dq"><div class="t">'+u.Event+(u.Year?' ('+u.Year+')':'')+'</div><div class="r">'+(u.Reason||'')+'</div></div>';});}
- $('drawer').classList.add('open');$('ov').classList.add('open');document.body.style.overflow='hidden';
+ $('dbody').innerHTML=h;$('drawer').classList.add('open');$('ov').classList.add('open');document.body.style.overflow='hidden';
 }
 function closeDrawer(){$('drawer').classList.remove('open');$('ov').classList.remove('open');document.body.style.overflow='';}
 $('dx').onclick=closeDrawer;$('ov').onclick=closeDrawer;
