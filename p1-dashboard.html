@@ -166,7 +166,7 @@ canvas{max-height:430px}
  <div class="count" id="count"></div>
  <div class="tbl reveal"><table class="data"><thead><tr><th>Competitor</th><th>Event</th><th>Year</th><th>Role</th><th>Evidence</th><th>Conf.</th><th>Source</th></tr></thead><tbody id="tb"></tbody></table></div>
 
- <h2 id="trust" class="reveal">The agent said <span>no</span> — and that's the point</h2>
+ <h2 id="trust" class="reveal">Verification &amp; <span>quarantine</span></h2>
  <div class="note reveal">79 rejected signals, each with a written reason. Four were different companies wearing the same name — noise that silently poisons bought lists.</div>
  <div class="reject reveal">
   <div class="rej"><div class="no">REJECTED · ALIAS COLLISION</div><b>"Vistar Technologies" @ Dental Business Summit</b><p>Dental LED-lighting manufacturer — not the eVIPs provider-data company. Refused.</p></div>
@@ -221,7 +221,7 @@ function openDrawer(comp){
    h+='<div class="devent"><div class="t">'+r.Event+' <span class="tag '+(r.Year=='2025'?'y25':r.Year=='2026'?'y26':'y27')+'">'+r.Year+'</span></div><div class="r">'+r.Role+' · <span class="tag '+(r.Confidence==='High'?'cH':'cM')+'">'+r.Confidence+'</span> · <span class="badge">'+r.Source+'</span></div><div class="e">"'+(r.Evidence||'').slice(0,160)+'"</div>'+link+'</div>';
   });}
  else{h+='<div class="dsec">VERIFIED APPEARANCES</div><div class="devent"><div class="r">Nothing verifiable for 2025–2027 — a finding in itself. Check quarantine below before assuming absence.</div></div>';}
- if(q.length){h+='<div class="dsec">QUARANTINED — THE AGENT SAID NO</div>';
+ if(q.length){h+='<div class="dsec">QUARANTINED SIGNALS</div>';
   q.forEach(u=>{h+='<div class="dq"><div class="t">'+u.Event+(u.Year?' ('+u.Year+')':'')+'</div><div class="r">'+(u.Reason||'')+'</div></div>';});}
  $('dbody').innerHTML=h;$('drawer').classList.add('open');$('ov').classList.add('open');document.body.style.overflow='hidden';
 }
