@@ -113,7 +113,7 @@ canvas{max-height:430px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style></head><body>
 <div class="nav"><b>P1 <span>//</span> Competitor Event Radar</b>
- <a href="#map" data-s="map">Battle map</a><a href="#charts" data-s="charts">Leaderboard</a><a href="#events" data-s="events">All events</a><a href="#trust" data-s="trust">Verification</a><a href="index.html">← All dashboards</a>
+ <a href="#map" data-s="map">Battle map</a><a href="#charts" data-s="charts">Leaderboard</a><a href="#events" data-s="events">All events</a><a href="index.html">← All dashboards</a>
 </div>
 
 <div class="hero">
@@ -127,7 +127,7 @@ canvas{max-height:430px}
  <div class="stat" data-goto="#map"><div class="n" data-count="20">0</div><div class="l">COMPETITORS MAPPED</div><div class="go">→</div></div>
  <div class="stat" data-filter-year="2026"><div class="n" data-count="67">0</div><div class="l">CONFIRMED FOR 2026</div><div class="go">→</div></div>
  <div class="stat" data-filter-year="2027"><div class="n" data-count="6">0</div><div class="l">ALREADY LOCKED FOR 2027</div><div class="go">→</div></div>
- <div class="stat" data-goto="#trust"><div class="n" data-count="79">0</div><div class="l">SIGNALS REJECTED &amp; QUARANTINED</div><div class="go">→</div></div>
+ <div class="stat"><div class="n" data-count="79">0</div><div class="l">SIGNALS REJECTED &amp; QUARANTINED</div><div class="go">→</div></div>
 </div>
 
 <div class="wrap">
@@ -166,17 +166,7 @@ canvas{max-height:430px}
  <div class="count" id="count"></div>
  <div class="tbl reveal"><table class="data"><thead><tr><th>Competitor</th><th>Event</th><th>Year</th><th>Role</th><th>Evidence</th><th>Conf.</th><th>Source</th></tr></thead><tbody id="tb"></tbody></table></div>
 
- <h2 id="trust" class="reveal">Verification &amp; <span>quarantine</span></h2>
- <div class="note reveal">79 rejected signals, each with a written reason. Four were different companies wearing the same name — noise that silently poisons bought lists.</div>
- <div class="reject reveal">
-  <div class="rej"><div class="no">REJECTED · ALIAS COLLISION</div><b>"Vistar Technologies" @ Dental Business Summit</b><p>Dental LED-lighting manufacturer — not the eVIPs provider-data company. Refused.</p></div>
-  <div class="rej"><div class="no">REJECTED · ALIAS COLLISION</div><b>"GAINE Academy" @ AiSED 2026</b><p>Malaysian education entity, no connection to Gaine Technology / Coperor. Refused.</p></div>
-  <div class="rej"><div class="no">REJECTED · ALIAS COLLISION</div><b>"Hill Labs" @ Fieldays 2026</b><p>New Zealand agricultural testing lab, not HiLabs. Refused.</p></div>
-  <div class="rej"><div class="no">REJECTED · ALIAS COLLISION</div><b>"Verisys Registrars" @ Offshore 2027</b><p>Marine-industry ISO body — not the credentialing company. Refused.</p></div>
-  <div class="rej"><div class="no">REJECTED · RULE 2</div><b>URL-only confirmations</b><p>Event name only in the link, not in retrieved text? Quarantined until a proper source names it.</p></div>
-  <div class="rej"><div class="no">REJECTED · SCOPE</div><b>Webinars &amp; gift-box "events"</b><p>Webinars and client gift programs aren't industry events. Excluded by definition.</p></div>
  </div>
-</div>
 
 <div class="ov" id="ov"></div>
 <aside class="drawer" id="drawer">
