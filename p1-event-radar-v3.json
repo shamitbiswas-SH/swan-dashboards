@@ -1,0 +1,407 @@
+{
+ "name": "P1 Event Radar v3 boost (search only)",
+ "nodes": [
+  {
+   "id": "n1",
+   "name": "Run",
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    -900,
+    300
+   ],
+   "parameters": {}
+  },
+  {
+   "id": "n2",
+   "name": "Competitors (thin 12)",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -680,
+    300
+   ],
+   "parameters": {
+    "jsCode": "return [{\"json\": {\"name\": \"Vistar Technologies\", \"domain\": \"vistartech.com\", \"aliases\": [\"Vistar\", \"eVIPs\", \"Vistar Technologies\"]}}, {\"json\": {\"name\": \"HiLabs\", \"domain\": \"hilabs.com\", \"aliases\": [\"HiLabs\", \"MCheck\"]}}, {\"json\": {\"name\": \"Medallion\", \"domain\": \"medallion.co\", \"aliases\": [\"Medallion\"]}}, {\"json\": {\"name\": \"Verifiable\", \"domain\": \"verifiable.com\", \"aliases\": [\"Verifiable\"]}}, {\"json\": {\"name\": \"andros\", \"domain\": \"andros.co\", \"aliases\": [\"andros\", \"CredSimple\"]}}, {\"json\": {\"name\": \"Verisys\", \"domain\": \"verisys.com\", \"aliases\": [\"Verisys\"]}}, {\"json\": {\"name\": \"Quest Analytics\", \"domain\": \"questanalytics.com\", \"aliases\": [\"Quest Analytics\", \"BetterDoctor\"]}}, {\"json\": {\"name\": \"LexisNexis Risk Solutions (Health Care)\", \"domain\": \"risk.lexisnexis.com\", \"aliases\": [\"LexisNexis Risk Solutions\", \"LexisNexis Health Care\"]}}, {\"json\": {\"name\": \"Gaine (Coperor)\", \"domain\": \"gaine.com\", \"aliases\": [\"Gaine\", \"Coperor\"]}}, {\"json\": {\"name\": \"Zelis\", \"domain\": \"zelis.com\", \"aliases\": [\"Zelis\"]}}, {\"json\": {\"name\": \"HealthEdge\", \"domain\": \"healthedge.com\", \"aliases\": [\"HealthEdge\", \"HealthRules\"]}}, {\"json\": {\"name\": \"Virsys12\", \"domain\": \"virsys12.com\", \"aliases\": [\"Virsys12\", \"V12 Network\"]}}];"
+   }
+  },
+  {
+   "id": "n3",
+   "name": "Loop competitors",
+   "type": "n8n-nodes-base.splitInBatches",
+   "typeVersion": 3,
+   "position": [
+    -460,
+    300
+   ],
+   "parameters": {
+    "batchSize": 1,
+    "options": {}
+   }
+  },
+  {
+   "id": "n4",
+   "name": "Apify: Google search",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -240,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/apify~google-search-scraper/run-sync-get-dataset-items?timeout=240",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({\n  queries: [\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR conference OR summit) 2025',\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR conference OR summit) 2026',\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR conference OR summit) 2027',\n    '\"' + $json.name.split(' (')[0] + '\" (AHIP OR HIMSS OR ViVE OR HLTH OR NCQA OR NAMSS OR CAQH OR \"RISE National\")',\n    '\"' + $json.name.split(' (')[0] + '\" (\"exhibitor list\" OR \"sponsor list\" OR agenda OR keynote) healthcare'\n  ].join('\\n'),\n  resultsPerPage: 15,\n  maxPagesPerQuery: 1,\n  languageCode: 'en',\n  countryCode: 'us'\n}) }}",
+    "options": {
+     "timeout": 250000
+    }
+   },
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "U5xcNvLoUVVEGGV9",
+     "name": "Header Auth account 5"
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n5",
+   "name": "Assemble corpus",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -20,
+    300
+   ],
+   "parameters": {
+    "jsCode": "\nconst comp = $('Loop competitors').item.json;\nconst cap = (s, n) => (s || '').toString().replace(/\\s+/g, ' ').slice(0, n);\nlet corpus = 'COMPETITOR: ' + comp.name + ' | aliases: ' + comp.aliases.join(', ') + ' | domain: ' + comp.domain + '\\n\\n=== GOOGLE RESULTS ===\\n';\ntry {\n  const g = $('Apify: Google search').all();\n  for (const it of g) {\n    const r = it.json;\n    if (r.organicResults) { for (const o of r.organicResults.slice(0, 15)) corpus += '- ' + cap(o.title, 160) + ' | ' + o.url + ' | ' + cap(o.description, 260) + '\\n'; }\n  }\n} catch (e) { corpus += '(google source unavailable)\\n'; }\ncorpus = corpus.slice(0, 90000);\nreturn [{ json: { competitor: comp.name, corpus } }];\n"
+   }
+  },
+  {
+   "id": "n6",
+   "name": "Claude: verify & extract",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    200,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.anthropic.com/v1/messages",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "anthropicApi",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "anthropic-version",
+       "value": "2023-06-01"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ model: 'claude-fable-5', max_tokens: 6000, system: \"You are a competitive-intelligence verification analyst for Simplify Healthcare's Provider1 product (provider lifecycle management for US payers).\\n\\nYou receive Google search results (title | url | snippet per line) for ONE competitor. Each line is a retrieved search result whose title/snippet text came from the indexed page.\\n\\nTASK: identify industry EVENTS (conferences, summits, trade shows, forums, roundtables) this competitor attended, sponsored, exhibited at, spoke at, or hosted in 2025, 2026 or 2027.\\n\\nRULES:\\n1. Only use URLs that appear in the results. Never invent or modify a URL.\\n2. A CONFIRMED row requires the title+snippet text of that result to explicitly name (a) the competitor (any alias), (b) the event, and (c) the year. All three or it goes to unverified.\\n3. Never extrapolate between years.\\n4. Confidence for snippet-confirmed rows is \\\"Med\\\" (organizer/newswire domains may be \\\"High\\\" when the title explicitly states the role, e.g. exhibitor list pages).\\n5. status: 2025 = \\\"Attended\\\", 2026 = \\\"Current\\\", 2027 = \\\"Upcoming\\\".\\n6. role: strongest stated role (Host > Exhibitor > Sponsor > Speaker > Attendee > Mentioned). If unstated, \\\"Mentioned\\\".\\n7. De-duplicate: one row per event+year, keep the best source.\\n8. evidence_quote: verbatim fragment (<=25 words) from the title/snippet proving the row.\\n\\nOUTPUT strict JSON only:\\n{\\\"confirmed\\\":[{\\\"event\\\":\\\"\\\",\\\"year\\\":\\\"2025|2026|2027\\\",\\\"status\\\":\\\"\\\",\\\"role\\\":\\\"\\\",\\\"evidence_quote\\\":\\\"\\\",\\\"source_url\\\":\\\"\\\",\\\"confidence\\\":\\\"High|Med\\\"}],\\\"unverified\\\":[{\\\"event\\\":\\\"\\\",\\\"year\\\":\\\"\\\",\\\"hint\\\":\\\"\\\",\\\"reason\\\":\\\"\\\"}]}\\nIf nothing: {\\\"confirmed\\\":[],\\\"unverified\\\":[]}\", messages: [{role:'user', content: $json.corpus}] }) }}",
+    "options": {
+     "timeout": 180000
+    }
+   },
+   "credentials": {
+    "anthropicApi": {
+     "id": "E8jLCIW0OjpYzw3m",
+     "name": "Anthropic account"
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput",
+   "retryOnFail": true,
+   "maxTries": 2
+  },
+  {
+   "id": "n7",
+   "name": "Parse rows",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    420,
+    300
+   ],
+   "parameters": {
+    "jsCode": "\nconst comp = $('Loop competitors').item.json;\nconst now = new Date().toISOString().slice(0, 16).replace('T', ' ');\nlet out = [];\nconst blocks = ($json && Array.isArray($json.content)) ? $json.content : [];\nconst tb = blocks.find(b => b && b.type === 'text' && typeof b.text === 'string');\nlet txt = tb ? tb.text : '';\nlet data = { confirmed: [], unverified: [] };\nlet bad = false;\ntry {\n  const m = txt.match(/\\{[\\s\\S]*\\}/);\n  if (m) { data = JSON.parse(m[0]); } else if (txt.trim().length > 0) { bad = true; }\n} catch (e) { bad = true; }\nif (bad) { out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: 'PARSE ERROR', Year: '', Hint: '', Reason: 'model output not JSON: ' + String(txt).slice(0, 160), ScannedAt: now } }); }\nfor (const r of (data.confirmed || [])) { out.push({ json: { _sheet: 'confirmed', Competitor: comp.name, Event: r.event || '', Year: String(r.year || ''), Status: r.status || '', Role: r.role || '', Evidence: r.evidence_quote || '', Confidence: r.confidence || '', SourceURL: r.source_url || '', ScannedAt: now } }); }\nfor (const r of (data.unverified || [])) { out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: r.event || '', Year: String(r.year || ''), Hint: r.hint || '', Reason: r.reason || '', ScannedAt: now } }); }\nif (out.length === 0) { out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: '(no signals found)', Year: '', Hint: '', Reason: 'no event signals in search corpus', ScannedAt: now } }); }\nreturn out;\n"
+   }
+  },
+  {
+   "id": "n8",
+   "name": "Confirmed vs unverified",
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    640,
+    300
+   ],
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json._sheet }}",
+          "rightValue": "confirmed",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "confirmed"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json._sheet }}",
+          "rightValue": "unverified",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "unverified"
+      }
+     ]
+    },
+    "options": {}
+   }
+  },
+  {
+   "id": "n9",
+   "name": "Sheet: Confirmed Events",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    880,
+    180
+   ],
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "Confirmed Events",
+     "mode": "name"
+    },
+    "columns": {
+     "mappingMode": "autoMapInputData",
+     "value": {},
+     "matchingColumns": [],
+     "schema": [],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "credentials": {
+    "googleSheetsOAuth2Api": {
+     "id": "E6guAUmCespbRsek",
+     "name": "Google Sheets OAuth2 API"
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n10",
+   "name": "Sheet: Unverified",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    880,
+    420
+   ],
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "Unverified",
+     "mode": "name"
+    },
+    "columns": {
+     "mappingMode": "autoMapInputData",
+     "value": {},
+     "matchingColumns": [],
+     "schema": [],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    },
+    "options": {}
+   },
+   "credentials": {
+    "googleSheetsOAuth2Api": {
+     "id": "E6guAUmCespbRsek",
+     "name": "Google Sheets OAuth2 API"
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  }
+ ],
+ "connections": {
+  "Run": {
+   "main": [
+    [
+     {
+      "node": "Competitors (thin 12)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Competitors (thin 12)": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Loop competitors": {
+   "main": [
+    [],
+    [
+     {
+      "node": "Apify: Google search",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Apify: Google search": {
+   "main": [
+    [
+     {
+      "node": "Assemble corpus",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Assemble corpus": {
+   "main": [
+    [
+     {
+      "node": "Claude: verify & extract",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Claude: verify & extract": {
+   "main": [
+    [
+     {
+      "node": "Parse rows",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Parse rows": {
+   "main": [
+    [
+     {
+      "node": "Confirmed vs unverified",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Confirmed vs unverified": {
+   "main": [
+    [
+     {
+      "node": "Sheet: Confirmed Events",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Sheet: Unverified",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sheet: Confirmed Events": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sheet: Unverified": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ },
+ "pinData": {}
+}
