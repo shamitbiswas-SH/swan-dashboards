@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Swan Agent Dashboards — Simplify Healthcare</title>
+<title>Swan & P1 Agent Dashboards - Simplify Healthcare</title>
 <style>
 :root{--blue:#105299;--gold:#D6B73E;--ink:#221F20;--tint:#EAF4FB;--goldbg:#FFF4CF}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -8,43 +8,55 @@ body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f7f9fc;
 .banner{background:linear-gradient(120deg,#0c3e74,var(--blue));color:#fff;padding:52px 42px 70px;text-align:center}
 .banner .kicker{font-size:11px;letter-spacing:3px;color:#BBECFF;font-weight:bold;margin-bottom:14px}
 .banner h1{font-family:Georgia,'Times New Roman',serif;font-size:42px;margin-bottom:10px}
-.banner p{font-size:16px;opacity:.92;max-width:760px;margin:0 auto}
+.banner p{font-size:16px;opacity:.92;max-width:780px;margin:0 auto}
 .meta{font-size:12px;margin-top:14px;color:#BBECFF}
-.wrap{max-width:1000px;margin:-36px auto 0;padding:0 24px 70px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
-@media(max-width:800px){.wrap{grid-template-columns:1fr}}
+.wrap{max-width:1240px;margin:-36px auto 0;padding:0 24px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
 .tile{background:#fff;border-radius:12px;box-shadow:0 6px 22px rgba(16,82,153,.14);padding:28px;border-top:6px solid var(--gold);display:flex;flex-direction:column}
+.tile.dark{background:#101a30;color:#e8eef8;border-top-color:#4C9CD5}
+.tile.dark h2{color:#fff}.tile.dark p{color:#8ea3c4}
 .tile h2{font-family:Georgia,serif;color:var(--blue);font-size:24px;margin-bottom:8px}
 .tile .tag{font-size:11px;font-weight:bold;letter-spacing:1px;color:#8a6d1a;background:var(--goldbg);display:inline-block;padding:3px 10px;border-radius:10px;margin-bottom:12px;align-self:flex-start}
+.tile.dark .tag{background:rgba(214,183,62,.15);color:#e9d489}
 .tile p{font-size:14px;color:#444;line-height:1.5;margin-bottom:16px}
 .stats{display:flex;gap:18px;margin-bottom:20px}
 .stats div{text-align:center}
 .stats .n{font-family:Georgia,serif;font-size:30px;font-weight:bold;color:var(--blue)}
+.tile.dark .stats .n{color:#7cc0ee}
 .stats .l{font-size:10px;font-weight:bold;color:#666;letter-spacing:.5px}
+.tile.dark .stats .l{color:#8ea3c4}
 a.btn{margin-top:auto;display:block;text-align:center;background:var(--blue);color:#fff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px;border-radius:8px}
 a.btn:hover{background:#0c3e74}
+.tile.dark a.btn{background:linear-gradient(90deg,#105299,#4C9CD5)}
 .footer{text-align:center;font-size:11px;color:#777;padding-bottom:40px}
 </style></head><body>
 <div class="banner">
  <div class="kicker">SIMPLIFY HEALTHCARE</div>
- <h1>Swan Agent Dashboards</h1>
- <p>Live views of what our two autonomous Swan agents produced — a qualified payer pipeline and a competitor event-intelligence map. Every data point verified to a source; nothing sent without human approval.</p>
- <div class="meta">Prepared for Murtuza · by Shamit Biswas · July 6, 2026</div>
+ <h1>Agent Dashboards</h1>
+ <p>Live views of what our autonomous agents produced - a qualified payer pipeline, a competitor event-intelligence map, and the Provider1 deep-dive radar. Every data point verified to a source; nothing sent without human approval.</p>
+ <div class="meta">Prepared for Murtuza &middot; by Shamit Biswas &middot; July 2026</div>
 </div>
 <div class="wrap">
- <div class="tile">
-  <span class="tag">AGENT 1 · DAILY 8:20 AM</span>
-  <h2>Config-Strain Radar</h2>
-  <p>Scans the US payer market for plans hiring in benefits configuration, provider data and claims configuration — then researches, scores, finds the owner and stages personalized outreach.</p>
-  <div class="stats"><div><div class="n">27</div><div class="l">ACCOUNTS</div></div><div><div class="n">12</div><div class="l">GOLD</div></div><div><div class="n">124</div><div class="l">CREDITS</div></div><div><div class="n">0</div><div class="l">SENT</div></div></div>
-  <a class="btn" href="pipeline.html">Open pipeline dashboard →</a>
+ <div class="tile dark">
+  <span class="tag">NEW &middot; P1 DEEP DIVE &middot; n8n + APIFY + CLAUDE</span>
+  <h2>P1 Competitor Event Radar</h2>
+  <p>Top 20 Provider1 competitors mapped across 2025-2027: flagship battle map, leaderboard, every verified appearance with evidence and source - plus the 79 rejected signals, in the open.</p>
+  <div class="stats"><div><div class="n">20</div><div class="l">COMPETITORS</div></div><div><div class="n">113</div><div class="l">VERIFIED</div></div><div><div class="n">6</div><div class="l">2027 LOCKED</div></div><div><div class="n">79</div><div class="l">REJECTED</div></div></div>
+  <a class="btn" href="p1-dashboard.html">Open the P1 radar &rarr;</a>
  </div>
  <div class="tile">
-  <span class="tag">AGENT 2 · WEEKLY MONDAY</span>
-  <h2>Competitor Event Radar</h2>
-  <p>Maps where ten competitors appear across 2025–2027 — event, role, confidence, source — and which Simplify Healthcare product lines each threatens. No inference: retrieved sources only.</p>
+  <span class="tag">AGENT 1 &middot; SWAN &middot; DAILY 8:20 AM</span>
+  <h2>Config-Strain Radar</h2>
+  <p>Scans the US payer market for plans hiring in benefits configuration, provider data and claims configuration - then researches, scores, finds the owner and stages personalized outreach.</p>
+  <div class="stats"><div><div class="n">27</div><div class="l">ACCOUNTS</div></div><div><div class="n">12</div><div class="l">GOLD</div></div><div><div class="n">124</div><div class="l">CREDITS</div></div><div><div class="n">0</div><div class="l">SENT</div></div></div>
+  <a class="btn" href="pipeline.html">Open pipeline dashboard &rarr;</a>
+ </div>
+ <div class="tile">
+  <span class="tag">AGENT 2 &middot; SWAN &middot; WEEKLY MONDAY</span>
+  <h2>Competitor Event Radar (CI)</h2>
+  <p>Maps where ten cross-portfolio competitors appear across 2025-2027 - event, role, confidence, source - and which Simplify Healthcare product lines each threatens.</p>
   <div class="stats"><div><div class="n">10</div><div class="l">COMPETITORS</div></div><div><div class="n">77</div><div class="l">EVENTS</div></div><div><div class="n">25</div><div class="l">UNVERIFIED</div></div><div><div class="n">12</div><div class="l">FLAGSHIPS</div></div></div>
-  <a class="btn" href="event-radar.html">Open event-radar dashboard →</a>
+  <a class="btn" href="event-radar.html">Open event-radar dashboard &rarr;</a>
  </div>
 </div>
-<div class="footer">Built from Swan agent outputs (getswan.com) · July 2026</div>
+<div class="footer">Built from Swan agent outputs (getswan.com) + n8n P1 radar &middot; July 2026</div>
 </body></html>
