@@ -1,0 +1,666 @@
+{
+ "name": "P1 Competitor Event Radar (top 20)",
+ "nodes": [
+  {
+   "id": "s0",
+   "name": "Rename spreadsheet",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1160,
+    140
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://sheets.googleapis.com/v4/spreadsheets/13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc:batchUpdate",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "googleSheetsOAuth2Api",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({requests:[{updateSpreadsheetProperties:{properties:{title:'P1 Competitor Event Radar - 2025-2027'},fields:'title'}}]}) }}",
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "s1",
+   "name": "Create tab: Confirmed Events",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    -940,
+    140
+   ],
+   "parameters": {
+    "resource": "sheet",
+    "operation": "create",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "title": "Confirmed Events",
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "s2",
+   "name": "Create tab: Unverified",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    -720,
+    140
+   ],
+   "parameters": {
+    "resource": "sheet",
+    "operation": "create",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "title": "Unverified",
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "s3",
+   "name": "Create tab: Run Log",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    -500,
+    140
+   ],
+   "parameters": {
+    "resource": "sheet",
+    "operation": "create",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "title": "Run Log",
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n1",
+   "name": "Run",
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    -1160,
+    300
+   ],
+   "parameters": {}
+  },
+  {
+   "id": "n2",
+   "name": "Competitors (top 20 P1)",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -940,
+    300
+   ],
+   "parameters": {
+    "jsCode": "return [{\"json\": {\"name\": \"Santech (I-Enroll)\", \"domain\": \"mysantech.com\", \"linkedin\": \"santech-solution-inc-\", \"aliases\": [\"Santech\", \"I-Enroll\", \"iEnroll\"]}}, {\"json\": {\"name\": \"Vistar Technologies\", \"domain\": \"vistartech.com\", \"linkedin\": \"vistar-technologies\", \"aliases\": [\"Vistar\", \"eVIPs\"]}}, {\"json\": {\"name\": \"symplr\", \"domain\": \"symplr.com\", \"linkedin\": \"symplr\", \"aliases\": [\"symplr\"]}}, {\"json\": {\"name\": \"Availity\", \"domain\": \"availity.com\", \"linkedin\": \"availity\", \"aliases\": [\"Availity\"]}}, {\"json\": {\"name\": \"HiLabs\", \"domain\": \"hilabs.com\", \"linkedin\": \"hilabs\", \"aliases\": [\"HiLabs\", \"MCheck\"]}}, {\"json\": {\"name\": \"Certify (CertifyOS)\", \"domain\": \"certifyos.com\", \"linkedin\": \"certifyos\", \"aliases\": [\"CertifyOS\", \"Certify\"]}}, {\"json\": {\"name\": \"Medallion\", \"domain\": \"medallion.co\", \"linkedin\": \"medallionhealth\", \"aliases\": [\"Medallion\"]}}, {\"json\": {\"name\": \"Verifiable\", \"domain\": \"verifiable.com\", \"linkedin\": \"verifiable\", \"aliases\": [\"Verifiable\"]}}, {\"json\": {\"name\": \"andros\", \"domain\": \"andros.co\", \"linkedin\": \"androshealthcare\", \"aliases\": [\"andros\", \"CredSimple\"]}}, {\"json\": {\"name\": \"Verisys\", \"domain\": \"verisys.com\", \"linkedin\": \"verisys-corporation\", \"aliases\": [\"Verisys\"]}}, {\"json\": {\"name\": \"Quest Analytics\", \"domain\": \"questanalytics.com\", \"linkedin\": \"quest-analytics-llc\", \"aliases\": [\"Quest Analytics\", \"BetterDoctor\"]}}, {\"json\": {\"name\": \"Kyruus Health\", \"domain\": \"kyruushealth.com\", \"linkedin\": \"kyruus\", \"aliases\": [\"Kyruus\", \"HealthSparq\"]}}, {\"json\": {\"name\": \"CAQH\", \"domain\": \"caqh.org\", \"linkedin\": \"caqh\", \"aliases\": [\"CAQH\", \"ProView\", \"DirectAssure\"]}}, {\"json\": {\"name\": \"LexisNexis Risk Solutions (Health Care)\", \"domain\": \"risk.lexisnexis.com\", \"linkedin\": \"lexisnexis-risk-solutions\", \"aliases\": [\"LexisNexis Risk Solutions\", \"LexisNexis Health Care\"]}}, {\"json\": {\"name\": \"Gaine (Coperor)\", \"domain\": \"gaine.com\", \"linkedin\": \"gaine-technology\", \"aliases\": [\"Gaine\", \"Coperor\"]}}, {\"json\": {\"name\": \"HealthStream (VerityStream / CredentialStream)\", \"domain\": \"healthstream.com\", \"linkedin\": \"healthstream\", \"aliases\": [\"HealthStream\", \"VerityStream\", \"CredentialStream\"]}}, {\"json\": {\"name\": \"Innovaccer\", \"domain\": \"innovaccer.com\", \"linkedin\": \"innovaccer\", \"aliases\": [\"Innovaccer\"]}}, {\"json\": {\"name\": \"Zelis\", \"domain\": \"zelis.com\", \"linkedin\": \"zelis-healthcare\", \"aliases\": [\"Zelis\"]}}, {\"json\": {\"name\": \"HealthEdge\", \"domain\": \"healthedge.com\", \"linkedin\": \"healthedge\", \"aliases\": [\"HealthEdge\", \"HealthRules\"]}}, {\"json\": {\"name\": \"Virsys12\", \"domain\": \"virsys12.com\", \"linkedin\": \"virsys12\", \"aliases\": [\"Virsys12\", \"V12 Network\"]}}];"
+   }
+  },
+  {
+   "id": "n3",
+   "name": "Loop competitors",
+   "type": "n8n-nodes-base.splitInBatches",
+   "typeVersion": 3,
+   "position": [
+    -720,
+    300
+   ],
+   "parameters": {
+    "batchSize": 1,
+    "options": {}
+   }
+  },
+  {
+   "id": "n4",
+   "name": "Apify: Google search",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -500,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/apify~google-search-scraper/run-sync-get-dataset-items?timeout=240",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "apifyApi",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({\n  queries: [\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR keynote OR conference OR summit) 2025',\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR keynote OR conference OR summit) 2026',\n    '\"' + $json.name.split(' (')[0] + '\" (exhibitor OR sponsor OR booth OR keynote OR conference OR summit) 2027',\n    '\"' + $json.name.split(' (')[0] + '\" (AHIP OR HIMSS OR ViVE OR HLTH OR \"RISE National\" OR NAMSS OR MGMA OR NCQA OR \"Becker\\'s\" OR NHCAA)'\n  ].join('\\n'),\n  resultsPerPage: 20,\n  maxPagesPerQuery: 1,\n  languageCode: 'en',\n  countryCode: 'us'\n}) }}",
+    "options": {
+     "timeout": 250000
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n5",
+   "name": "Apify: site crawl (JS ok)",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -280,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/apify~website-content-crawler/run-sync-get-dataset-items?timeout=280",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "apifyApi",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({\n  startUrls: [\n    {url: 'https://' + $('Loop competitors').item.json.domain},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/events'},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/news'},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/press-releases'},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/newsroom'},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/blog'},\n    {url: 'https://' + $('Loop competitors').item.json.domain + '/resources/events'}\n  ],\n  crawlerType: 'playwright:adaptive',\n  maxCrawlDepth: 1,\n  maxCrawlPages: 22,\n  maxResults: 22,\n  proxyConfiguration: {useApifyProxy: true},\n  removeCookieWarnings: true,\n  saveMarkdown: false\n}) }}",
+    "options": {
+     "timeout": 290000
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n6",
+   "name": "Apify: LinkedIn posts",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -60,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.apify.com/v2/acts/apimaestro~linkedin-profile-posts/run-sync-get-dataset-items?timeout=180",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "apifyApi",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ username: $('Loop competitors').item.json.linkedin, total_posts: 40 }) }}",
+    "options": {
+     "timeout": 190000
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n7",
+   "name": "Assemble corpus",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    160,
+    300
+   ],
+   "parameters": {
+    "jsCode": "\nconst comp = $('Loop competitors').item.json;\nconst cap = (s, n) => (s || '').toString().replace(/\\s+/g, ' ').slice(0, n);\nlet corpus = 'COMPETITOR: ' + comp.name + ' | aliases: ' + comp.aliases.join(', ') + ' | domain: ' + comp.domain + '\\n\\n=== GOOGLE RESULTS ===\\n';\ntry {\n  const g = $('Apify: Google search').all();\n  for (const it of g) {\n    const r = it.json;\n    if (r.organicResults) { for (const o of r.organicResults.slice(0, 20)) corpus += '- ' + cap(o.title, 150) + ' | ' + o.url + ' | ' + cap(o.description, 250) + '\\n'; }\n    else if (r.title && r.url) corpus += '- ' + cap(r.title, 150) + ' | ' + r.url + ' | ' + cap(r.description, 250) + '\\n';\n  }\n} catch (e) { corpus += '(google source unavailable)\\n'; }\ncorpus += '\\n=== COMPETITOR WEBSITE PAGES ===\\n';\ntry {\n  const s = $('Apify: site crawl (JS ok)').all();\n  for (const it of s.slice(0, 22)) { const p = it.json; if (p.url) corpus += '\\n--- PAGE: ' + p.url + ' ---\\n' + cap(p.text || p.markdown, 2600) + '\\n'; }\n} catch (e) { corpus += '(site source unavailable)\\n'; }\ncorpus += '\\n=== LINKEDIN COMPANY POSTS ===\\n';\ntry {\n  const l = $('Apify: LinkedIn posts').all();\n  for (const it of l.slice(0, 40)) { const p = it.json; const t = p.text || (p.post && p.post.text) || ''; const u = p.url || p.post_url || (p.post && p.post.url) || ''; if (t) corpus += '- ' + cap(t, 400) + ' | ' + u + '\\n'; }\n} catch (e) { corpus += '(linkedin source unavailable)\\n'; }\ncorpus = corpus.slice(0, 120000);\nreturn [{ json: { competitor: comp.name, corpus } }];\n"
+   }
+  },
+  {
+   "id": "n8",
+   "name": "Claude: verify & extract",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    380,
+    300
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.anthropic.com/v1/messages",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "anthropicApi",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "anthropic-version",
+       "value": "2023-06-01"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ model: 'claude-fable-5', max_tokens: 8000, system: \"You are a competitive-intelligence verification analyst for Simplify Healthcare's Provider1 product (provider lifecycle management for US payers: provider data management, credentialing, contracting, rosters, network adequacy, claims configuration).\\n\\nYou receive a research corpus for ONE competitor: Google search results (title/url/snippet), pages crawled from the competitor's own website (url + text), and recent LinkedIn company posts (text + url). The corpus may be partial.\\n\\nTASK: identify industry EVENTS (conferences, summits, trade shows, forums, roundtables, webinars EXCLUDED unless flagship-hosted in-person) this competitor attended, sponsored, exhibited at, spoke at, or hosted in 2025, 2026 or 2027.\\n\\nNON-NEGOTIABLE RULES:\\n1. Only use URLs that appear in the corpus. Never invent, guess or 'repair' a URL.\\n2. A CONFIRMED row requires that the text tied to that URL explicitly names (a) this competitor (any alias), (b) the event, and (c) the year. All three or it is NOT confirmed.\\n3. Never extrapolate: attendance in one year is NOT evidence for another year. Each year stands alone.\\n4. Signals that fail rules 1-3 but look plausible go to \\\"unverified\\\" with the hint and the reason they failed.\\n5. Confidence: High = event organizer page, competitor's own event/press page, or newswire explicitly stating role+event+year. Med = trade media, LinkedIn post, search snippet only.\\n6. status: 2025 = \\\"Attended\\\", 2026 = \\\"Current\\\", 2027 = \\\"Upcoming\\\" (2027 only if explicitly confirmed by a source).\\n7. role: choose the strongest evidenced role. Hierarchy: Host > Exhibitor > Sponsor > Speaker > Attendee > Mentioned. Include booth numbers or sponsorship tier when stated.\\n8. De-duplicate: one row per event+year, keep the highest-confidence source.\\n9. evidence_quote: a short verbatim fragment (<=25 words) from the corpus that proves the row.\\n\\nOUTPUT: strict JSON only, no markdown fences, no commentary:\\n{\\\"confirmed\\\":[{\\\"event\\\":\\\"\\\",\\\"year\\\":\\\"2025|2026|2027\\\",\\\"status\\\":\\\"\\\",\\\"role\\\":\\\"\\\",\\\"evidence_quote\\\":\\\"\\\",\\\"source_url\\\":\\\"\\\",\\\"confidence\\\":\\\"High|Med\\\"}],\\\"unverified\\\":[{\\\"event\\\":\\\"\\\",\\\"year\\\":\\\"\\\",\\\"hint\\\":\\\"\\\",\\\"reason\\\":\\\"\\\"}]}\\nIf nothing found: {\\\"confirmed\\\":[],\\\"unverified\\\":[]}\", messages: [{role:'user', content: $json.corpus}] }) }}",
+    "options": {
+     "timeout": 180000
+    }
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput",
+   "retryOnFail": true,
+   "maxTries": 2
+  },
+  {
+   "id": "n9",
+   "name": "Parse rows",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    600,
+    300
+   ],
+   "parameters": {
+    "jsCode": "\nconst comp = $('Loop competitors').item.json;\nconst now = new Date().toISOString().slice(0, 16).replace('T', ' ');\nlet out = [];\nlet txt = '';\ntry { txt = $json.content[0].text; } catch (e) { txt = ''; }\nlet data = { confirmed: [], unverified: [] };\ntry {\n  const m = txt.match(/\\{[\\s\\S]*\\}/);\n  if (m) data = JSON.parse(m[0]);\n} catch (e) {\n  out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: 'PARSE ERROR', Year: '', Hint: '', Reason: ('model output not JSON: ' + txt.slice(0, 180)), ScannedAt: now } });\n}\nfor (const r of (data.confirmed || [])) out.push({ json: { _sheet: 'confirmed', Competitor: comp.name, Event: r.event, Year: r.year, Status: r.status, Role: r.role, Evidence: r.evidence_quote, Confidence: r.confidence, SourceURL: r.source_url, ScannedAt: now } });\nfor (const r of (data.unverified || [])) out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: r.event, Year: r.year, Hint: r.hint, Reason: r.reason, ScannedAt: now } });\nif (out.length === 0) out.push({ json: { _sheet: 'unverified', Competitor: comp.name, Event: '(no signals found)', Year: '', Hint: '', Reason: 'no event signals in corpus', ScannedAt: now } });\nreturn out;\n"
+   }
+  },
+  {
+   "id": "n10",
+   "name": "Confirmed vs unverified",
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    820,
+    300
+   ],
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json._sheet }}",
+          "rightValue": "confirmed",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "confirmed"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 2
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json._sheet }}",
+          "rightValue": "unverified",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "unverified"
+      }
+     ]
+    },
+    "options": {}
+   }
+  },
+  {
+   "id": "n11",
+   "name": "Sheet: Confirmed Events",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    1060,
+    180
+   ],
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "Confirmed Events",
+     "mode": "name"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Competitor": "={{ $json.Competitor }}",
+      "Event": "={{ $json.Event }}",
+      "Year": "={{ $json.Year }}",
+      "Status": "={{ $json.Status }}",
+      "Role": "={{ $json.Role }}",
+      "Evidence": "={{ $json.Evidence }}",
+      "Confidence": "={{ $json.Confidence }}",
+      "SourceURL": "={{ $json.SourceURL }}",
+      "ScannedAt": "={{ $json.ScannedAt }}"
+     },
+     "matchingColumns": [],
+     "schema": []
+    },
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n12",
+   "name": "Sheet: Unverified",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    1060,
+    420
+   ],
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "Unverified",
+     "mode": "name"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "Competitor": "={{ $json.Competitor }}",
+      "Event": "={{ $json.Event }}",
+      "Year": "={{ $json.Year }}",
+      "Hint": "={{ $json.Hint }}",
+      "Reason": "={{ $json.Reason }}",
+      "ScannedAt": "={{ $json.ScannedAt }}"
+     },
+     "matchingColumns": [],
+     "schema": []
+    },
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "n13",
+   "name": "Run summary",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -500,
+    80
+   ],
+   "parameters": {
+    "jsCode": "\nconst now = new Date().toISOString().slice(0, 16).replace('T', ' ');\nreturn [{ json: { RunAt: now, Note: 'P1 Competitor Event Radar run complete - 20 competitors scanned. Confirmed & Unverified tabs updated. Verification: URL-retrieved sources only, no year extrapolation.' } }];\n"
+   }
+  },
+  {
+   "id": "n14",
+   "name": "Sheet: Run Log",
+   "type": "n8n-nodes-base.googleSheets",
+   "typeVersion": 4.5,
+   "position": [
+    -280,
+    80
+   ],
+   "parameters": {
+    "operation": "append",
+    "documentId": {
+     "__rl": true,
+     "value": "13tzv8E3SMF1iR8Mwn_azlk03c6Uv_2MjLxchCzjLQfc",
+     "mode": "id"
+    },
+    "sheetName": {
+     "__rl": true,
+     "value": "Run Log",
+     "mode": "name"
+    },
+    "columns": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "RunAt": "={{ $json.RunAt }}",
+      "Note": "={{ $json.Note }}"
+     },
+     "matchingColumns": [],
+     "schema": []
+    },
+    "options": {}
+   },
+   "alwaysOutputData": true,
+   "onError": "continueRegularOutput"
+  }
+ ],
+ "connections": {
+  "Run": {
+   "main": [
+    [
+     {
+      "node": "Rename spreadsheet",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Competitors (top 20 P1)": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Loop competitors": {
+   "main": [
+    [
+     {
+      "node": "Run summary",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Apify: Google search",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Apify: Google search": {
+   "main": [
+    [
+     {
+      "node": "Apify: site crawl (JS ok)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Apify: site crawl (JS ok)": {
+   "main": [
+    [
+     {
+      "node": "Apify: LinkedIn posts",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Apify: LinkedIn posts": {
+   "main": [
+    [
+     {
+      "node": "Assemble corpus",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Assemble corpus": {
+   "main": [
+    [
+     {
+      "node": "Claude: verify & extract",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Claude: verify & extract": {
+   "main": [
+    [
+     {
+      "node": "Parse rows",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Parse rows": {
+   "main": [
+    [
+     {
+      "node": "Confirmed vs unverified",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Confirmed vs unverified": {
+   "main": [
+    [
+     {
+      "node": "Sheet: Confirmed Events",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Sheet: Unverified",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sheet: Confirmed Events": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sheet: Unverified": {
+   "main": [
+    [
+     {
+      "node": "Loop competitors",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Run summary": {
+   "main": [
+    [
+     {
+      "node": "Sheet: Run Log",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Rename spreadsheet": {
+   "main": [
+    [
+     {
+      "node": "Create tab: Confirmed Events",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Create tab: Confirmed Events": {
+   "main": [
+    [
+     {
+      "node": "Create tab: Unverified",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Create tab: Unverified": {
+   "main": [
+    [
+     {
+      "node": "Create tab: Run Log",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Create tab: Run Log": {
+   "main": [
+    [
+     {
+      "node": "Competitors (top 20 P1)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ },
+ "pinData": {}
+}
